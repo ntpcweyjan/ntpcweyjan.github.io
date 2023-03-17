@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'><meta http-equiv='Access-Control-Allow-Origin' content='*'><meta http-equiv='Access-Control-Allow-Credentials' content='true'><script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/gameelements.js'></script><script src='https://fustyles.github.io/webduino/SpBlocklyJS/MQTT_20220324/mqtt.min.js'></script></head><body><script>const delay=(seconds)=>{return new Promise((resolve)=>{setTimeout(resolve,seconds*1000);});};const main=async()=>{
+var volume;
+
+
+volume = 0;
+const clientId = "mqtt_" + Math.random().toString(16).substr(2, 8);
+const options = {
+	username: '',
+	password: '',
+	keepalive: 60,
+	clientId: clientId,
+	protocolId: "MQTT",
+	protocolVersion: 4,
+	clean: true,
+	reconnectPeriod: 1000,
+	connectTimeout: 30 * 1000
+}
+
+var mqtt_client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt',options);
+mqtt_client.on("connect", ()=>{
+	console.log("connected");
+  mqtt_client.subscribe('7697mb/control');
+  mqtt_client.subscribe('7697mb/mp3');
+  mqtt_client.subscribe('7697mb/volume');
+	mqtt_client.on("message", async function (topic, payload) {
+  if (topic=='7697mb/mp3') {
+    span_create('3',55,40,14,(new TextDecoder().decode(payload)),999);
+    span_create('4',60,70,14,'play',999);
+  }
+  if (topic=='7697mb/control') {
+    span_create('4',60,70,14,(new TextDecoder().decode(payload)),999);
+  }
+  if (topic=='7697mb/volume') {
+    span_create('8',0,350,18,(new TextDecoder().decode(payload)),999);
+  }
+   })
+  }
+)
+
+span_create('1',0,0,20,'遠端MP3播放',999);
+span_create('2',5,40,14,'播放第',999);
+span_create('5',0,70,14,'撥放狀態:',999);
+span_create('6',80,40,14,'首',999);
+span_create('7',0,300,18,'音量',999);
+range_create('6',100,30,40,300,1,100,0,1,30,999,true);
+async function gamerange_6_onchange (event) {
+  mqtt_client.publish('7697mb/volume', String((range_get('6',"value"))));
+};
+document.getElementById("gamerange_6").addEventListener("change", gamerange_6_onchange, true);
+button_create('1',25,25,0,100,1,null,'1',12,999,true);
+button_create('2',25,25,50,100,1,null,'2',12,999,true);
+button_create('3',25,25,100,100,1,null,'3',12,999,true);
+button_create('4',25,25,0,150,1,null,'4',12,999,true);
+button_create('5',25,25,50,150,1,null,'5',12,999,true);
+button_create('6',25,25,100,150,1,null,'6',12,999,true);
+button_create('7',25,25,0,200,1,null,'7',12,999,true);
+button_create('8',25,25,50,200,1,null,'8',12,999,true);
+button_create('9',25,25,100,200,1,null,'9',12,999,true);
+button_create('play',40,40,0,250,1,null,'play',12,999,true);
+button_create('stop',40,40,50,250,1,null,'stop',12,999,true);
+button_create('previous',40,40,100,250,1,null,'<',12,999,true);
+button_create('next',40,40,150,250,1,null,'>',12,999,true);
+async function gamebutton_1_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('1'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_1").addEventListener("click", gamebutton_1_onclick, true);
+async function gamebutton_2_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('2'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_2").addEventListener("click", gamebutton_2_onclick, true);
+async function gamebutton_3_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('3'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_3").addEventListener("click", gamebutton_3_onclick, true);
+async function gamebutton_4_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('4'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_4").addEventListener("click", gamebutton_4_onclick, true);
+async function gamebutton_5_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('5'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_5").addEventListener("click", gamebutton_5_onclick, true);
+async function gamebutton_6_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('6'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_6").addEventListener("click", gamebutton_6_onclick, true);
+async function gamebutton_7_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('7'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_7").addEventListener("click", gamebutton_7_onclick, true);
+async function gamebutton_8_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('8'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_8").addEventListener("click", gamebutton_8_onclick, true);
+async function gamebutton_9_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('9'));
+  span_create('4',60,70,14,'play',999);
+};
+document.getElementById("gamebutton_9").addEventListener("click", gamebutton_9_onclick, true);
+async function gamebutton_play_onclick (event) {
+  mqtt_client.publish('7697mb/mp3', String('1'));
+};
+document.getElementById("gamebutton_play").addEventListener("click", gamebutton_play_onclick, true);
+async function gamebutton_stop_onclick (event) {
+  mqtt_client.publish('7697mb/control', String('stop'));
+};
+document.getElementById("gamebutton_stop").addEventListener("click", gamebutton_stop_onclick, true);
+async function gamebutton_previous_onclick (event) {
+  mqtt_client.publish('7697mb/control', String('previous'));
+};
+document.getElementById("gamebutton_previous").addEventListener("click", gamebutton_previous_onclick, true);
+async function gamebutton_next_onclick (event) {
+  mqtt_client.publish('7697mb/control', String('next'));
+};
+document.getElementById("gamebutton_next").addEventListener("click", gamebutton_next_onclick, true);
+};main();</script></body></html>
