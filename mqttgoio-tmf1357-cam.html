@@ -1,0 +1,58 @@
+
+        <!DOCTYPE html><html><head><meta charset='utf-8'><meta http-equiv='Access-Control-Allow-Origin' content='*'>
+        <meta http-equiv='Access-Control-Allow-Credentials' content='true'>
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+        <!-- <script src='https://fustyles.github.io/webduino/SpBlocklyJS/GameElements_20190131/gameelements.js'></script> -->
+        <script src='https://riddleling.github.io/SpBlocklyJS/gameelements.js'></script> 
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/MQTT_20220324/mqtt.min.js'></script>
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/Chart.min.js'></script>
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/pretty-doughtnut.js'></script>
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/jquery.tempgauge.js'></script>
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/jquery.simplegauge.js'></script>
+        <!-- <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/waterbubble.js'></script> -->
+        <script src='https://riddleling.github.io/SpBlocklyJS/waterbubble.js'></script>
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/linechart.js'></script>
+        <script src='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/barchart.js'></script>
+        <link href='https://fustyles.github.io/webduino/SpBlocklyJS/chart_20220723/jquery.simplegauge.css' type='text/css' rel='stylesheet'>
+        </head><body><script>const delay=(seconds)=>{return new Promise((resolve)=>{setTimeout(resolve,seconds*1000);});};const main=async()=>{
+        var newdate;
+        const clientId = "mqtt_" + Math.random().toString(16).substr(2, 8);
+        const options = {
+            username: '',
+            password: '',
+            keepalive: 60,
+            clientId: clientId,
+            protocolId: "MQTT",
+            protocolVersion: 4,
+            clean: true,
+            reconnectPeriod: 1000,
+            connectTimeout: 30 * 1000
+        }
+        
+        var mqtt_client = mqtt.connect('wss://broker.mqttgo.io:8084/mqtt',options);
+        mqtt_client.on("connect", ()=>{
+            console.log("connected");
+            
+            mqtt_client.subscribe("tmf1357/cam");
+            
+            mqtt_client.on("message", async function (topic, payload) {
+            
+                if (topic == "tmf1357/cam") {
+                    image_set('',"url",("data:image/jpeg;base64,"+mqttBinarytobase64(payload)));
+                }
+            
+           })
+          }
+        )
+
+        
+        
+        function mqttBinarytobase64(input_array) {
+            const content = new Uint8Array(input_array);
+            return btoa(String.fromCharCode.apply(null, content));
+        }
+        image_create_stream('','',0,0,999,true,200,200);
+        
+        
+        };main();</script></body></html>
+        
